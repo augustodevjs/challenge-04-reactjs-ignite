@@ -9,15 +9,7 @@ import { ModalAddFood } from "../../components/ModalAddFood";
 import { ModalEditFood } from "../../components/ModalEditFood";
 
 import { FoodsContainer } from "./styles";
-
-interface IFoodPlate {
-  id: number;
-  name: string;
-  image: string;
-  price: string;
-  description: string;
-  available: boolean;
-}
+import { IFoodPlate } from "../../types";
 
 export function Dashboard() {
   const [foods, setFoods] = useState<IFoodPlate[]>([]);
@@ -25,6 +17,7 @@ export function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
 
+  // Lista os foods na aplicação - GET
   useEffect(() => {
     async function loadFoods() {
       const response = await api.get("/foods");
@@ -35,6 +28,7 @@ export function Dashboard() {
     loadFoods();
   }, []);
 
+  // Cria um novo food na aplicação - POST
   async function handleAddFood(food: Omit<IFoodPlate, "id" | "available">) {
     try {
       const response = await api.post("/foods", {
@@ -52,6 +46,7 @@ export function Dashboard() {
     // TODO UPDATE A FOOD PLATE ON THE API
   }
 
+  // Delete um food da aplicação - DELETE
   async function handleDeleteFood(id: number) {
     try {
       await api.delete(`/foods/${id}`);
@@ -63,6 +58,7 @@ export function Dashboard() {
     }
   }
 
+  // Abrir e fechar o modal
   function toggleModal() {
     setModalOpen(!modalOpen);
   }
@@ -71,8 +67,10 @@ export function Dashboard() {
     setEditModalOpen(!editModalOpen);
   }
 
+  // Abre o modal com os já cadastrados.
   function handleEditFood(food: IFoodPlate) {
-    // TODO SET THE CURRENT EDITING FOOD ID IN THE STATE
+    setEditingFood(food);
+    toggleEditModal();
   }
 
   return (
@@ -92,7 +90,7 @@ export function Dashboard() {
         handleUpdateFood={handleUpdateFood}
       />
 
-      <FoodsContainer data-testid="foods-list">
+      <FoodsContainer>
         {foods &&
           foods.map((food) => (
             <Food

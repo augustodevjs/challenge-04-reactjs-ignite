@@ -1,17 +1,9 @@
 import { useState } from "react";
 
 import { FiEdit3, FiTrash } from "react-icons/fi";
+import { IFoodPlate } from "../../types";
 
 import { Container } from "./styles";
-
-interface IFoodPlate {
-  id: number;
-  name: string;
-  image: string;
-  price: string;
-  description: string;
-  available: boolean;
-}
 
 interface IProps {
   food: IFoodPlate;
@@ -21,13 +13,14 @@ interface IProps {
 
 export function Food({ food, handleDelete, handleEditFood }: IProps) {
   const [isAvailable, setIsAvailable] = useState(food.available);
+  console.log(food);
 
   async function toggleAvailable() {
-    // TODO UPDATE STATUS (available)
+    setIsAvailable(!isAvailable);
   }
 
   function setEditingFood() {
-    // TODO - SET THE ID OF THE CURRENT ITEM TO THE EDITING FOOD AND OPEN MODAL
+    handleEditFood(food);
   }
 
   return (
@@ -35,6 +28,7 @@ export function Food({ food, handleDelete, handleEditFood }: IProps) {
       <header>
         <img src={food.image} alt={food.name} />
       </header>
+
       <section className="body">
         <h2>{food.name}</h2>
         <p>{food.description}</p>
@@ -42,13 +36,13 @@ export function Food({ food, handleDelete, handleEditFood }: IProps) {
           R$ <b>{food.price}</b>
         </p>
       </section>
+
       <section className="footer">
         <div className="icon-container">
           <button
             type="button"
             className="icon"
             onClick={() => setEditingFood()}
-            data-testid={`edit-food-${food.id}`}
           >
             <FiEdit3 size={20} />
           </button>
@@ -57,7 +51,6 @@ export function Food({ food, handleDelete, handleEditFood }: IProps) {
             type="button"
             className="icon"
             onClick={() => handleDelete(food.id)}
-            data-testid={`remove-food-${food.id}`}
           >
             <FiTrash size={20} />
           </button>
@@ -72,7 +65,6 @@ export function Food({ food, handleDelete, handleEditFood }: IProps) {
               type="checkbox"
               checked={isAvailable}
               onChange={toggleAvailable}
-              data-testid={`change-status-food-${food.id}`}
             />
             <span className="slider" />
           </label>

@@ -5,22 +5,7 @@ import { FormHandles } from "@unform/core";
 import { Form } from "./styles";
 import { Modal } from "../Modal";
 import { Input } from "../Input";
-
-interface IFoodPlate {
-  id: number;
-  name: string;
-  image: string;
-  price: string;
-  description: string;
-  available: boolean;
-}
-
-interface ICreateFoodData {
-  name: string;
-  image: string;
-  price: string;
-  description: string;
-}
+import { IFoodPlate } from "../../types";
 
 interface IModalProps {
   isOpen: boolean;
@@ -36,9 +21,8 @@ export function ModalAddFood({
   const formRef = useRef<FormHandles>(null);
 
   const handleSubmit = useCallback(
-    async (data: ICreateFoodData) => {
+    async (data: Omit<IFoodPlate, "id" | "available">) => {
       handleAddFood(data);
-      console.log(data);
       setIsOpen();
     },
     [handleAddFood, setIsOpen]
