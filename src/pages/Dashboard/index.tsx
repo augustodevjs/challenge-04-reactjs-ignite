@@ -27,7 +27,9 @@ export function Dashboard() {
 
   useEffect(() => {
     async function loadFoods() {
-      // TODO LOAD FOODS
+      const response = await api.get("/foods");
+      const data = setFoods(response.data);
+      return data;
     }
 
     loadFoods();
@@ -35,7 +37,12 @@ export function Dashboard() {
 
   async function handleAddFood(food: Omit<IFoodPlate, "id" | "available">) {
     try {
-      // TODO ADD A NEW FOOD PLATE TO THE API
+      const response = await api.post("/foods", {
+        ...food,
+        available: true,
+      });
+
+      setFoods([...foods, response.data]);
     } catch (err) {
       console.log(err);
     }
@@ -46,7 +53,14 @@ export function Dashboard() {
   }
 
   async function handleDeleteFood(id: number) {
-    // TODO DELETE A FOOD PLATE FROM THE API
+    try {
+      await api.delete(`/foods/${id}`);
+      const filteredFoods = foods.filter((food) => food.id !== id);
+
+      setFoods(filteredFoods);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function toggleModal() {
@@ -64,11 +78,13 @@ export function Dashboard() {
   return (
     <>
       <Header openModal={toggleModal} />
+
       <ModalAddFood
         isOpen={modalOpen}
         setIsOpen={toggleModal}
         handleAddFood={handleAddFood}
       />
+
       <ModalEditFood
         isOpen={editModalOpen}
         setIsOpen={toggleEditModal}
