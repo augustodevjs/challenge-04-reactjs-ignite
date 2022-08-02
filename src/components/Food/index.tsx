@@ -5,6 +5,8 @@ import { IFoodPlate } from "../../types";
 
 import { Container } from "./styles";
 
+import api from "../../services/api";
+
 interface IProps {
   food: IFoodPlate;
   handleDelete: (id: number) => {};
@@ -13,10 +15,18 @@ interface IProps {
 
 export function Food({ food, handleDelete, handleEditFood }: IProps) {
   const [isAvailable, setIsAvailable] = useState(food.available);
-  console.log(food);
 
   async function toggleAvailable() {
-    setIsAvailable(!isAvailable);
+    try {
+      await api.put(`/foods/${food.id}`, {
+        ...food,
+        available: !isAvailable,
+      });
+
+      setIsAvailable(!isAvailable);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function setEditingFood() {
